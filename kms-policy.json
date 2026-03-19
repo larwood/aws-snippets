@@ -1,0 +1,123 @@
+{
+  "Version": "2012-10-17", 		 	 	 
+  "Statement": [
+    {
+      "Sid": "AllowIAMIdentityCenterAdminAccountToAdministerTheKey",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::<MANAGEMENT-ACCOUNT>:root"
+        ]
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowIAMIdentityCenterAccountsToUseTheKMSKeyViaIdentityStoreAndStore",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::<MANAGEMENT-ACCOUNT>:root"
+        ]
+      },
+      "Action": [
+        "kms:Decrypt",
+        "kms:Encrypt",
+        "kms:GenerateDataKeyWithoutPlaintext"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "kms:ViaService": [
+						"identitystore.*.amazonaws.com",
+						"sso.*.amazonaws.com"
+					]
+        }
+      }
+    },
+    {
+      "Sid": "AllowIdentityCenterAndIdentityStoreToUseTheKMSKey",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": [
+					"sso.amazonaws.com",
+					"identitystore.amazonaws.com"
+				]
+      },
+      "Action": [
+        "kms:DescribeKey",
+				"kms:Decrypt",
+        "kms:ReEncryptTo",
+        "kms:ReEncryptFrom",
+        "kms:GenerateDataKeyWithoutPlaintext"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "<MANAGEMENT-ACCOUNT>"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAppAdminsInTheSameOrganizationToUseTheKMSKeyViaIdentityCenterAndStore",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "kms:Decrypt",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalOrgID": "<ORG-ID>"
+        },
+        "StringLike": {
+          "kms:ViaService": [
+						"sso.*.amazonaws.com",
+						"identitystore.*.amazonaws.com"
+					]
+        },
+        "ForAnyValue:StringEquals": {
+          "kms:EncryptionContextKeys": [
+						"aws:sso:instance-arn",
+						"aws:identitystore:identitystore-arn"
+					]
+        },
+        "StringEqualsIfExists": {
+					"kms:EncryptionContext:aws:identitystore:identitystore-arn": "arn:aws:identitystore::<MANAGEMENT-ACCOUNT>:identitystore/<IDENTITYSTORE-ID>",
+          "kms:EncryptionContext:aws:sso:instance-arn": "<SSO-INSTANCE-ARN>"
+
+        }
+      }
+    },
+    {
+      "Sid": "AllowManagedAppsToUseTheKMSKeyViaIdentityCenterAndStore",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "kms:Decrypt",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "kms:ViaService": [
+						"sso.*.amazonaws.com",
+						"identitystore.*.amazonaws.com"
+					]
+        },
+        "Bool": {
+          "aws:PrincipalIsAWSService": "true"
+        },
+        "StringEquals": {
+          "aws:SourceOrgID": "<ORG-ID>"
+        },
+        "ForAnyValue:StringEquals": {
+          "kms:EncryptionContextKeys": [
+						"aws:sso:instance-arn",
+						"aws:identitystore:identitystore-arn"
+					]
+        },
+        "StringEqualsIfExists": {
+					"kms:EncryptionContext:aws:identitystore:identitystore-arn": "arn:aws:identitystore::<MANAGEMENT-ACCOUNT>:identitystore/<IDENTITYSTORE-ID>",
+          "kms:EncryptionContext:aws:sso:instance-arn": "<SSO-INSTANCE-ARN>"
+
+        }
+      }
+    }
+	]
+}
