@@ -1,7 +1,5 @@
-ws-identity-center-multi-region
-README.md
 {
-  "Version": "2012-10-17", 		 	 	 
+  "Version": "2012-10-17",         
   "Statement": [
     {
       "Sid": "AllowIAMIdentityCenterAdminAccountToAdministerTheKey",
@@ -31,9 +29,9 @@ README.md
       "Condition": {
         "StringLike": {
           "kms:ViaService": [
-						"identitystore.*.amazonaws.com",
-						"sso.*.amazonaws.com"
-					]
+            "identitystore.*.amazonaws.com",
+            "sso.*.amazonaws.com"
+          ]
         }
       }
     },
@@ -42,13 +40,13 @@ README.md
       "Effect": "Allow",
       "Principal": {
         "Service": [
-					"sso.amazonaws.com",
-					"identitystore.amazonaws.com"
-				]
+          "sso.amazonaws.com",
+          "identitystore.amazonaws.com"
+        ]
       },
       "Action": [
         "kms:DescribeKey",
-				"kms:Decrypt",
+        "kms:Decrypt",
         "kms:ReEncryptTo",
         "kms:ReEncryptFrom",
         "kms:GenerateDataKeyWithoutPlaintext"
@@ -72,18 +70,18 @@ README.md
         },
         "StringLike": {
           "kms:ViaService": [
-						"sso.*.amazonaws.com",
-						"identitystore.*.amazonaws.com"
-					]
+            "sso.*.amazonaws.com",
+            "identitystore.*.amazonaws.com"
+          ]
         },
         "ForAnyValue:StringEquals": {
           "kms:EncryptionContextKeys": [
-						"aws:sso:instance-arn",
-						"aws:identitystore:identitystore-arn"
-					]
+            "aws:sso:instance-arn",
+            "aws:identitystore:identitystore-arn"
+          ]
         },
         "StringEqualsIfExists": {
-					"kms:EncryptionContext:aws:identitystore:identitystore-arn": "arn:aws:identitystore::<MANAGEMENT-ACCOUNT>:identitystore/<IDENTITYSTORE-ID>",
+          "kms:EncryptionContext:aws:identitystore:identitystore-arn": "arn:aws:identitystore::<MANAGEMENT-ACCOUNT>:identitystore/<IDENTITYSTORE-ID>",
           "kms:EncryptionContext:aws:sso:instance-arn": "<SSO-INSTANCE-ARN>"
 
         }
@@ -98,9 +96,9 @@ README.md
       "Condition": {
         "StringLike": {
           "kms:ViaService": [
-						"sso.*.amazonaws.com",
-						"identitystore.*.amazonaws.com"
-					]
+            "sso.*.amazonaws.com",
+            "identitystore.*.amazonaws.com"
+          ]
         },
         "Bool": {
           "aws:PrincipalIsAWSService": "true"
@@ -110,16 +108,16 @@ README.md
         },
         "ForAnyValue:StringEquals": {
           "kms:EncryptionContextKeys": [
-						"aws:sso:instance-arn",
-						"aws:identitystore:identitystore-arn"
-					]
+            "aws:sso:instance-arn",
+            "aws:identitystore:identitystore-arn"
+          ]
         },
         "StringEqualsIfExists": {
-					"kms:EncryptionContext:aws:identitystore:identitystore-arn": "arn:aws:identitystore::<MANAGEMENT-ACCOUNT>:identitystore/<IDENTITYSTORE-ID>",
+          "kms:EncryptionContext:aws:identitystore:identitystore-arn": "arn:aws:identitystore::<MANAGEMENT-ACCOUNT>:identitystore/<IDENTITYSTORE-ID>",
           "kms:EncryptionContext:aws:sso:instance-arn": "<SSO-INSTANCE-ARN>"
 
         }
       }
     }
-	]
+  ]
 }
